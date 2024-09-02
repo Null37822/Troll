@@ -30,15 +30,21 @@
 </head>
 <body>
     <button id="playButton">Play</button>
-    <audio id="audio" src="https://null37822.github.io/Troll/null.mp3" loop></audio>
+    <audio id="audio" src="https://null37822.github.io/Troll/null.mp3" preload="auto" loop></audio>
 
     <script>
         const audio = document.getElementById('audio');
         const playButton = document.getElementById('playButton');
 
         playButton.addEventListener('click', () => {
-            audio.volume = 1.0; // Configura el volumen a máximo (1.0)
-            audio.play();
+            if (audio.readyState >= 2) { // Verifica si el audio está listo para reproducirse
+                audio.volume = 1.0; // Configura el volumen a máximo (1.0)
+                audio.play().catch(error => {
+                    console.error('Error al reproducir el audio:', error);
+                });
+            } else {
+                console.error('El audio no está listo para reproducirse.');
+            }
         });
     </script>
 </body>
