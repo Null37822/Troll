@@ -14,22 +14,36 @@
             height: 100vh;
             background-color: #000;
         }
-        button {
-            padding: 20px 40px;
-            font-size: 24px;
-            color: #fff;
+        .play-button {
+            width: 100px;
+            height: 100px;
             background-color: #28a745;
             border: none;
-            border-radius: 5px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
+            transition: background-color 0.3s;
+            outline: none;
         }
-        button:hover {
+        .play-button:hover {
             background-color: #218838;
+        }
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 30px solid #fff;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
-    <button id="playButton">Play</button>
+    <button class="play-button" id="playButton">
+        <div class="play-icon"></div>
+    </button>
     <audio id="audio" src="https://null37822.github.io/Troll/null.mp3" preload="auto" loop></audio>
 
     <script>
@@ -37,7 +51,7 @@
         const playButton = document.getElementById('playButton');
 
         playButton.addEventListener('click', () => {
-            if (audio.readyState >= 2) { // Verifica si el audio está listo para reproducirse
+            if (audio.readyState >= 2) {
                 audio.volume = 1.0; // Configura el volumen a máximo (1.0)
                 audio.play().catch(error => {
                     console.error('Error al reproducir el audio:', error);
