@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Audio</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <button id="playButton">Play</button>
+    <audio id="audio" src="https://tu-usuario.github.io/tu-repositorio/null.mp3" loop></audio>
+
+    <script>
+        const audio = document.getElementById('audio');
+        const playButton = document.getElementById('playButton');
+
+        playButton.addEventListener('click', () => {
+            audio.volume = 1.0; // Configura el volumen a máximo (1.0)
+            audio.play();
+        });
+    </script>
+</body>
+</html>
