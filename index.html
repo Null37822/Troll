@@ -13,6 +13,7 @@
             align-items: center;
             height: 100vh;
             background-color: #000;
+            overflow: hidden;
         }
         button {
             padding: 20px 40px;
@@ -22,24 +23,43 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            z-index: 10;
+            position: relative;
         }
         button:hover {
             background-color: #218838;
+        }
+        .hidden {
+            display: none;
+        }
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
         }
     </style>
 </head>
 <body>
     <button id="playButton">Play</button>
     <audio id="audio" src="https://null37822.github.io/Troll/null.mp3" preload="auto" loop></audio>
+    <img id="image" src="imagen.jpg" class="hidden" alt="Imagen después del play">
 
     <script>
         const audio = document.getElementById('audio');
         const playButton = document.getElementById('playButton');
+        const image = document.getElementById('image');
 
         playButton.addEventListener('click', () => {
-            if (audio.readyState >= 2) { // Verifica si el audio está listo para reproducirse
+            if (audio.readyState >= 2) {
                 audio.volume = 1.0; // Configura el volumen a máximo (1.0)
-                audio.play().catch(error => {
+                audio.play().then(() => {
+                    playButton.classList.add('hidden'); // Oculta el botón Play
+                    image.classList.remove('hidden');   // Muestra la imagen
+                }).catch(error => {
                     console.error('Error al reproducir el audio:', error);
                 });
             } else {
