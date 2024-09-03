@@ -49,25 +49,48 @@
         const audio = document.getElementById('audio');
         const playMessage = document.getElementById('playMessage');
 
-        // Función para reproducir el audio
         function playAudio() {
             audio.play().then(() => {
-                playMessage.style.display = 'none';  // Ocultar el mensaje una vez se inicia el audio
-            }).catch(() => {
+                playMessage.style.display = 'none';
+            }).catch((error) => {
                 console.log('El navegador ha bloqueado la reproducción automática. Se requiere interacción del usuario.');
                 playMessage.style.display = 'block';
             });
         }
 
-        // Listeners para múltiples tipos de interacción
+        // Intento de forzar un clic
+        function forceClick() {
+            const event = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            document.body.dispatchEvent(event);
+        }
+
+        // Listener para interactuar al tocar/clicar
         document.body.addEventListener('click', playAudio);
         document.body.addEventListener('touchstart', playAudio);
-        document.body.addEventListener('keydown', playAudio);
 
-        // Intentar reproducir automáticamente al cargar la página
+        // Disparar automáticamente el evento después de cargar la página
         window.onload = () => {
-            playAudio();
+            setTimeout(() => {
+                forceClick();
+            }, 500);  // Espera 500ms antes de intentar el clic
         };
+
+        // Reintentar en intervalos si el audio no se reproduce
+        let attemptCount = 0;
+        const maxAttempts = 5;
+
+        const interval = setInterval(() => {
+            attemptCount++;
+            forceClick();
+
+            if (attemptCount >= maxAttempts || !audio.paused) {
+                clearInterval(interval);
+            }
+        }, 1000); // Intentar cada segundo hasta 5 veces o hasta que se reproduzca el audio
 
         // Reiniciar el audio cuando termine
         audio.addEventListener('ended', () => {
