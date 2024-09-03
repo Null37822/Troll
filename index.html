@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,11 +16,6 @@
             overflow: hidden;
             flex-direction: column;
         }
-        #options {
-            display: flex;
-            justify-content: space-between;
-            width: 200px;
-        }
         button {
             padding: 20px 40px;
             font-size: 24px;
@@ -30,18 +25,16 @@
             cursor: pointer;
             z-index: 10;
             position: relative;
+            margin: 10px;
         }
-        #si {
-            background-color: #28a745;
+        #yesButton {
+            background-color: #28a745; /* Verde */
         }
-        #si:hover {
-            background-color: #218838;
+        #noButton {
+            background-color: #dc3545; /* Rojo */
         }
-        #no {
-            background-color: #dc3545;
-        }
-        #no:hover {
-            background-color: #c82333;
+        button:hover {
+            opacity: 0.8;
         }
         .hidden {
             display: none;
@@ -58,44 +51,56 @@
             font-size: 32px;
             margin-top: 10px;
         }
+        #prompt {
+            color: #fff;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
-    <div id="prompt">
-        <p style="color: #fff; font-size: 24px;">¿COMENZAR?</p>
-        <div id="options">
-            <button id="si">SI</button>
-            <button id="no">NO</button>
-        </div>
-    </div>
-    <audio id="audio" src="https://null37822.github.io/Troll/null.mp3" preload="auto"></audio>
+    <div id="prompt">¿Comenzar?</div>
+    <button id="yesButton">Sí</button>
+    <button id="noButton">No</button>
+    <audio id="audio" src="https://null37822.github.io/games/null.mp3" preload="auto" loop></audio>
     <img id="image" src="imagen.jpg" class="hidden" alt="Imagen después del play">
     <div id="text" class="hidden">x_x.d.r.g_xxbruh</div>
 
     <script>
         const audio = document.getElementById('audio');
-        const siButton = document.getElementById('si');
-        const noButton = document.getElementById('no');
-        const promptDiv = document.getElementById('prompt');
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
         const image = document.getElementById('image');
         const text = document.getElementById('text');
+        const prompt = document.getElementById('prompt');
 
-        const startExperience = () => {
-            audio.volume = 1.0; // Volumen máximo
-            audio.play().then(() => {
-                promptDiv.classList.add('hidden'); // Ocultar los botones
-                image.classList.remove('hidden');   // Mostrar la imagen
-                text.classList.remove('hidden');    // Mostrar el texto "x_x.d.r.g_xxbruh"
-            }).catch(error => {
+        // Precargar el audio en segundo plano y silenciarlo hasta que el usuario presione Sí
+        audio.volume = 0;
+        audio.play().then(() => audio.pause()).catch(() => {
+            console.warn('El navegador ha bloqueado la reproducción automática, pero el audio está listo.');
+        });
+
+        const startInteraction = () => {
+            // Mostrar la imagen y texto inmediatamente
+            prompt.classList.add('hidden');
+            yesButton.classList.add('hidden');
+            noButton.classList.add('hidden');
+            image.classList.remove('hidden');
+            text.classList.remove('hidden');
+
+            // Restablecer el volumen y reproducir el audio
+            audio.currentTime = 0; // Reinicia el audio al inicio
+            audio.volume = 1.0;
+            audio.play().catch(error => {
                 console.error('Error al reproducir el audio:', error);
             });
         };
 
-        siButton.addEventListener('click', startExperience);
-        noButton.addEventListener('click', startExperience);
-        document.addEventListener('click', startExperience, { once: true });
+        yesButton.addEventListener('click', startInteraction);
+        noButton.addEventListener('click', startInteraction);
+        document.body.addEventListener('click', startInteraction);
 
-        // Reinicia el audio instantáneamente cuando termina
+        // Eliminación de cualquier posible retraso en el reinicio del audio
         audio.addEventListener('ended', () => {
             audio.currentTime = 0; // Reinicia el tiempo de reproducción a 0
             audio.play(); // Reproduce el audio de nuevo sin interrupciones
