@@ -29,34 +29,44 @@
             font-size: 32px;
             margin-top: 10px;
         }
+        #playMessage {
+            color: #fff;
+            font-size: 16px;
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <audio id="audio" src="https://null37822.github.io/games/null.mp3" preload="auto" loop></audio>
     <img id="image" src="imagen.jpg" alt="Seguime en Instagram xd">
     <div id="text">x_x.d.r.g_xxbruh</div>
+    <div id="playMessage">Haz clic en cualquier parte de la pantalla para iniciar el audio</div>
 
     <script>
         const audio = document.getElementById('audio');
+        const playMessage = document.getElementById('playMessage');
 
-        // Precargar el audio en segundo plano y silenciarlo hasta que el usuario interactúe
-        audio.volume = 0;
-        audio.play().then(() => {
-            audio.pause();
-            audio.currentTime = 0;
-            audio.volume = 1.0;
+        function playAudio() {
+            audio.play().then(() => {
+                console.log('Audio reproduciéndose automáticamente.');
+            }).catch(() => {
+                console.log('El navegador ha bloqueado la reproducción automática. Se requiere interacción del usuario.');
+                playMessage.style.display = 'block';
+            });
+        }
 
-            // Intentar reproducir el audio cuando el usuario interactúe con la página
-            const playAudio = () => {
-                audio.play().catch(() => {
-                    console.log('Esperando interacción del usuario para reproducir el audio.');
-                });
-            };
+        // Intentar reproducir el audio lo antes posible
+        playAudio();
 
-            document.addEventListener('click', playAudio, { once: true });
-            document.addEventListener('keydown', playAudio, { once: true });
-        }).catch(() => {
-            console.warn('El navegador ha bloqueado la reproducción automática. Se requiere interacción del usuario.');
+        // Si la reproducción falla, esperar a que el usuario interactúe
+        document.addEventListener('click', () => {
+            audio.play().catch(error => {
+                console.error('Error al reproducir el audio:', error);
+            });
+            playMessage.style.display = 'none';
         });
 
         // Reiniciar el audio cuando termine
