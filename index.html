@@ -49,7 +49,7 @@
 </head>
 <body>
     <button id="playButton">Play</button>
-    <audio id="audio" src="https://null37822.github.io/Troll/null.mp3" preload="auto" loop></audio>
+    <audio id="audio" src="https://null37822.github.io/Troll/null.mp3" preload="auto"></audio>
     <img id="image" src="imagen.jpg" class="hidden" alt="Imagen después del play">
     <div id="text" class="hidden">x_x.d.r.g_xxbruh</div>
 
@@ -59,30 +59,33 @@
         const image = document.getElementById('image');
         const text = document.getElementById('text');
 
-        // Precargar el audio en segundo plano y silenciarlo hasta que el usuario presione Play
+        // Precargar y preparar el audio en silencio
         audio.volume = 0;
         audio.play().then(() => audio.pause()).catch(() => {
             console.warn('El navegador ha bloqueado la reproducción automática, pero el audio está listo.');
         });
 
         playButton.addEventListener('click', () => {
-            // Mostrar la imagen y texto inmediatamente
+            // Mostrar la imagen y texto instantáneamente
             playButton.classList.add('hidden');
             image.classList.remove('hidden');
             text.classList.remove('hidden');
 
             // Restablecer el volumen y reproducir el audio
-            audio.currentTime = 0; // Reinicia el audio al inicio
+            audio.currentTime = 0;
             audio.volume = 1.0;
             audio.play().catch(error => {
                 console.error('Error al reproducir el audio:', error);
             });
         });
 
-        // Eliminación de cualquier posible retraso en el reinicio del audio
-        audio.addEventListener('ended', () => {
-            audio.currentTime = 0; // Reinicia el tiempo de reproducción a 0
-            audio.play(); // Reproduce el audio de nuevo sin interrupciones
+        // Verificar continuamente el tiempo de reproducción
+        audio.addEventListener('timeupdate', () => {
+            // Verifica si quedan menos de 0.3 segundos para que termine el audio
+            if (audio.duration - audio.currentTime <= 0.3) {
+                audio.currentTime = 0; // Reinicia al comienzo para evitar el corte
+                audio.play(); // Reproduce instantáneamente sin esperar a que termine
+            }
         });
     </script>
 </body>
