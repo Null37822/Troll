@@ -38,10 +38,25 @@
 
     <script>
         const audio = document.getElementById('audio');
-        audio.currentTime = 0;
-        audio.volume = 1.0;
-        audio.play().catch(error => {
-            console.error('Error al reproducir el audio:', error);
+
+        // Precargar el audio en segundo plano y silenciarlo hasta que el usuario interactúe
+        audio.volume = 0;
+        audio.play().then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = 1.0;
+
+            // Intentar reproducir el audio cuando el usuario interactúe con la página
+            const playAudio = () => {
+                audio.play().catch(() => {
+                    console.log('Esperando interacción del usuario para reproducir el audio.');
+                });
+            };
+
+            document.addEventListener('click', playAudio, { once: true });
+            document.addEventListener('keydown', playAudio, { once: true });
+        }).catch(() => {
+            console.warn('El navegador ha bloqueado la reproducción automática. Se requiere interacción del usuario.');
         });
 
         // Reiniciar el audio cuando termine
