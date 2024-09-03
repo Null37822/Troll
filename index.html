@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,6 +16,22 @@
             overflow: hidden;
             flex-direction: column;
             position: relative;
+            color: #fff;
+        }
+        #prompt {
+            font-size: 24px;
+            text-align: center;
+            z-index: 10;
+        }
+        #options {
+            margin-top: 20px;
+            font-size: 20px;
+            display: flex;
+            justify-content: space-between;
+            width: 200px;
+        }
+        #image, #text {
+            display: none;
         }
         img {
             max-width: 100%;
@@ -29,73 +45,60 @@
             font-size: 32px;
             margin-top: 10px;
         }
-        #playMessage {
-            color: #fff;
-            font-size: 16px;
-            position: absolute;
-            bottom: 20px;
-            text-align: center;
-            display: block;
-        }
     </style>
 </head>
 <body>
     <audio id="audio" src="https://null37822.github.io/games/null.mp3" preload="auto" loop></audio>
+    
+    <!-- Initial Prompt -->
+    <div id="prompt">
+        ¿COMENZAR?
+        <div id="options">
+            <div id="si">SI</div>
+            <div id="no">NO</div>
+        </div>
+    </div>
+    
     <img id="image" src="imagen.jpg" alt="Seguime en Instagram xd">
     <div id="text">x_x.d.r.g_xxbruh</div>
-    <div id="playMessage">Haz clic en cualquier parte de la pantalla para iniciar el audio</div>
 
     <script>
         const audio = document.getElementById('audio');
-        const playMessage = document.getElementById('playMessage');
+        const promptDiv = document.getElementById('prompt');
+        const image = document.getElementById('image');
+        const text = document.getElementById('text');
 
-        function playAudio() {
-            audio.play().then(() => {
-                playMessage.style.display = 'none';
-            }).catch((error) => {
-                console.log('El navegador ha bloqueado la reproducción automática. Se requiere interacción del usuario.');
-                playMessage.style.display = 'block';
+        const startExperience = () => {
+            // Hide the prompt and show the image and text
+            promptDiv.style.display = 'none';
+            image.style.display = 'block';
+            text.style.display = 'block';
+
+            // Start the audio playback
+            audio.play().catch(() => {
+                console.log('Esperando interacción del usuario para reproducir el audio.');
             });
-        }
-
-        // Intento de forzar un clic
-        function forceClick() {
-            const event = new MouseEvent('click', {
-                bubbles: true,
-                cancelable: true,
-                view: window
-            });
-            document.body.dispatchEvent(event);
-        }
-
-        // Listener para interactuar al tocar/clicar
-        document.body.addEventListener('click', playAudio);
-        document.body.addEventListener('touchstart', playAudio);
-
-        // Disparar automáticamente el evento después de cargar la página
-        window.onload = () => {
-            setTimeout(() => {
-                forceClick();
-            }, 500);  // Espera 500ms antes de intentar el clic
         };
 
-        // Reintentar en intervalos si el audio no se reproduce
-        let attemptCount = 0;
-        const maxAttempts = 5;
+        document.getElementById('si').addEventListener('click', startExperience);
+        document.getElementById('no').addEventListener('click', startExperience);
+        document.addEventListener('click', startExperience, { once: true });
+        document.addEventListener('keydown', startExperience, { once: true });
 
-        const interval = setInterval(() => {
-            attemptCount++;
-            forceClick();
-
-            if (attemptCount >= maxAttempts || !audio.paused) {
-                clearInterval(interval);
-            }
-        }, 1000); // Intentar cada segundo hasta 5 veces o hasta que se reproduzca el audio
-
-        // Reiniciar el audio cuando termine
-        audio.addEventListener('ended', () => {
+        // Precargar el audio en segundo plano y silenciarlo hasta que el usuario interactúe
+        audio.volume = 0;
+        audio.play().then(() => {
+            audio.pause();
             audio.currentTime = 0;
-            audio.play();
+            audio.volume = 1.0;
+
+            // Reiniciar el audio cuando termine
+            audio.addEventListener('ended', () => {
+                audio.currentTime = 0;
+                audio.play();
+            });
+        }).catch(() => {
+            console.warn('El navegador ha bloqueado la reproducción automática. Se requiere interacción del usuario.');
         });
     </script>
 </body>
