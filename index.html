@@ -40,7 +40,7 @@
     </style>
 </head>
 <body>
-    <audio id="audio" src="https://null37822.github.io/games/null.mp3" preload="auto" loop></audio>
+    <audio id="audio" src="https://null37822.github.io/games/null.mp3" preload="auto" autoplay muted loop></audio>
     <img id="image" src="imagen.jpg" alt="Seguime en Instagram xd">
     <div id="text">x_x.d.r.g_xxbruh</div>
     <div id="playMessage">Haz clic en cualquier parte de la pantalla para iniciar el audio</div>
@@ -54,6 +54,7 @@
         const playMessage = document.getElementById('playMessage');
 
         function myFunction() {
+            audio.muted = false;
             audio.play().then(() => {
                 console.log('Audio reproduciéndose automáticamente.');
             }).catch(() => {
@@ -65,6 +66,11 @@
         // Simula un clic en el botón oculto para iniciar el audio automáticamente
         $(document).ready(function(){
             $(".cargar").click();
+        });
+
+        // Si la reproducción automática con muted no funciona, mostrar el mensaje
+        audio.play().catch(() => {
+            playMessage.style.display = 'block';
         });
 
         // Reiniciar el audio cuando termine
