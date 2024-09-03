@@ -45,11 +45,15 @@
     <div id="text">x_x.d.r.g_xxbruh</div>
     <div id="playMessage">Haz clic en cualquier parte de la pantalla para iniciar el audio</div>
 
+    <button class="cargar" type="button" onclick="myFunction()" style="display:none;"></button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
     <script>
         const audio = document.getElementById('audio');
         const playMessage = document.getElementById('playMessage');
 
-        function playAudio() {
+        function myFunction() {
             audio.play().then(() => {
                 console.log('Audio reproduciéndose automáticamente.');
             }).catch(() => {
@@ -58,15 +62,9 @@
             });
         }
 
-        // Intentar reproducir el audio lo antes posible
-        playAudio();
-
-        // Si la reproducción falla, esperar a que el usuario interactúe
-        document.addEventListener('click', () => {
-            audio.play().catch(error => {
-                console.error('Error al reproducir el audio:', error);
-            });
-            playMessage.style.display = 'none';
+        // Simula un clic en el botón oculto para iniciar el audio automáticamente
+        $(document).ready(function(){
+            $(".cargar").click();
         });
 
         // Reiniciar el audio cuando termine
