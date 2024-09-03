@@ -30,6 +30,18 @@
             justify-content: space-between;
             width: 200px;
         }
+        #si, #no {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        #si {
+            background-color: green;
+        }
+        #no {
+            background-color: red;
+        }
         #image, #text {
             display: none;
         }
@@ -69,21 +81,28 @@
         const text = document.getElementById('text');
 
         const startExperience = () => {
-            // Hide the prompt and show the image and text
+            // Ocultar el prompt y mostrar la imagen y texto
             promptDiv.style.display = 'none';
             image.style.display = 'block';
             text.style.display = 'block';
 
-            // Start the audio playback
+            // Reproducir el audio
             audio.play().catch(() => {
                 console.log('Esperando interacción del usuario para reproducir el audio.');
             });
         };
 
-        document.getElementById('si').addEventListener('click', startExperience);
-        document.getElementById('no').addEventListener('click', startExperience);
-        document.addEventListener('click', startExperience, { once: true });
-        document.addEventListener('keydown', startExperience, { once: true });
+        // Reproducción de audio y acciones al hacer clic en cualquier parte o en los botones
+        const activateExperience = () => {
+            startExperience();
+            document.removeEventListener('click', activateExperience);
+            document.removeEventListener('keydown', activateExperience);
+        };
+
+        document.getElementById('si').addEventListener('click', activateExperience);
+        document.getElementById('no').addEventListener('click', activateExperience);
+        document.addEventListener('click', activateExperience, { once: true });
+        document.addEventListener('keydown', activateExperience, { once: true });
 
         // Precargar el audio en segundo plano y silenciarlo hasta que el usuario interactúe
         audio.volume = 0;
