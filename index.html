@@ -49,43 +49,54 @@
 </head>
 <body>
     <button id="playButton">Play</button>
-    <audio id="audio" src="https://null37822.github.io/Troll/null.mp3" preload="auto"></audio>
+    <audio id="audio1" src="https://null37822.github.io/Troll/null.mp3" preload="auto"></audio>
+    <audio id="audio2" src="https://null37822.github.io/Troll/null.mp3" preload="auto" volume="0"></audio>
     <img id="image" src="imagen.jpg" class="hidden" alt="Imagen después del play">
     <div id="text" class="hidden">x_x.d.r.g_xxbruh</div>
 
     <script>
-        const audio = document.getElementById('audio');
+        const audio1 = document.getElementById('audio1');
+        const audio2 = document.getElementById('audio2');
         const playButton = document.getElementById('playButton');
         const image = document.getElementById('image');
         const text = document.getElementById('text');
 
-        // Precargar y preparar el audio en silencio
-        audio.volume = 0;
-        audio.play().then(() => audio.pause()).catch(() => {
-            console.warn('El navegador ha bloqueado la reproducción automática, pero el audio está listo.');
-        });
+        let currentAudio = audio1;
+        let nextAudio = audio2;
+
+        // Precarga y prepara los audios en segundo plano
+        audio1.volume = 1.0;
+        audio2.volume = 0;
 
         playButton.addEventListener('click', () => {
-            // Mostrar la imagen y texto instantáneamente
             playButton.classList.add('hidden');
             image.classList.remove('hidden');
             text.classList.remove('hidden');
 
-            // Restablecer el volumen y reproducir el audio
-            audio.currentTime = 0;
-            audio.volume = 1.0;
-            audio.play().catch(error => {
+            // Comienza a reproducir el audio principal
+            currentAudio.play().catch(error => {
                 console.error('Error al reproducir el audio:', error);
             });
         });
 
-        // Verificar continuamente el tiempo de reproducción
-        audio.addEventListener('timeupdate', () => {
-            // Verifica si quedan menos de 0.3 segundos para que termine el audio
-            if (audio.duration - audio.currentTime <= 0.3) {
-                audio.currentTime = 0; // Reinicia al comienzo para evitar el corte
-                audio.play(); // Reproduce instantáneamente sin esperar a que termine
+        currentAudio.addEventListener('timeupdate', () => {
+            // Verifica si quedan menos de 0.5 segundos para que termine el audio
+            if (currentAudio.duration - currentAudio.currentTime <= 0.5) {
+                // Prepara el siguiente audio
+                nextAudio.currentTime = 0;
+                nextAudio.play().catch(error => {
+                    console.error('Error al pre-cargar el siguiente audio:', error);
+                });
             }
+        });
+
+        currentAudio.addEventListener('ended', () => {
+            // Cambia al siguiente audio y ajusta su volumen
+            nextAudio.volume = 1.0;
+            [currentAudio, nextAudio] = [nextAudio, currentAudio]; // Intercambia los audios
+            currentAudio.play().catch(error => {
+                console.error('Error al cambiar al siguiente audio:', error);
+            });
         });
     </script>
 </body>
