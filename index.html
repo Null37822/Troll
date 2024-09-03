@@ -17,23 +17,6 @@
             flex-direction: column;
             position: relative;
         }
-        button {
-            padding: 20px 40px;
-            font-size: 24px;
-            color: #fff;
-            background-color: #28a745;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 10;
-            position: relative;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .hidden {
-            display: none;
-        }
         img {
             max-width: 100%;
             max-height: 80vh;
@@ -46,58 +29,25 @@
             font-size: 32px;
             margin-top: 10px;
         }
-        video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
     </style>
 </head>
 <body>
-    <button id="playButton">Play</button>
     <audio id="audio" src="https://null37822.github.io/games/null.mp3" preload="auto" loop></audio>
-    <video id="backgroundVideo" src="neon.mp4" autoplay muted loop></video>
-    <img id="image" src="imagen.jpg" class="hidden" alt="Seguime en Instagram xd">
-    <div id="text" class="hidden">x_x.d.r.g_xxbruh</div>
+    <img id="image" src="imagen.jpg" alt="Seguime en Instagram xd">
+    <div id="text">x_x.d.r.g_xxbruh</div>
 
     <script>
         const audio = document.getElementById('audio');
-        const playButton = document.getElementById('playButton');
-        const image = document.getElementById('image');
-        const text = document.getElementById('text');
-        const backgroundVideo = document.getElementById('backgroundVideo');
-
-        // Precargar el audio en segundo plano y silenciarlo hasta que el usuario presione Play
-        audio.volume = 0;
-        audio.play().then(() => audio.pause()).catch(() => {
-            console.warn('El navegador ha bloqueado la reproducción automática, pero el audio está listo.');
+        audio.currentTime = 0;
+        audio.volume = 1.0;
+        audio.play().catch(error => {
+            console.error('Error al reproducir el audio:', error);
         });
 
-        playButton.addEventListener('click', () => {
-            // Mostrar la imagen y texto inmediatamente
-            playButton.classList.add('hidden');
-            image.classList.remove('hidden');
-            text.classList.remove('hidden');
-
-            // Ocultar el video de fondo
-            backgroundVideo.classList.add('hidden');
-
-            // Restablecer el volumen y reproducir el audio rápidamente
-            audio.currentTime = 0; // Reinicia el audio al inicio
-            audio.volume = 1.0;
-            audio.play().catch(error => {
-                console.error('Error al reproducir el audio:', error);
-            });
-        });
-
-        // Eliminación de cualquier posible retraso en el reinicio del audio
+        // Reiniciar el audio cuando termine
         audio.addEventListener('ended', () => {
-            audio.currentTime = 0; // Reinicia el tiempo de reproducción a 0
-            audio.play(); // Reproduce el audio de nuevo sin interrupciones
+            audio.currentTime = 0;
+            audio.play();
         });
     </script>
 </body>
